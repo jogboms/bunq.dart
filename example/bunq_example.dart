@@ -1,35 +1,22 @@
-import 'package:bunq/src/util/rsa.dart';
-import 'package:pointycastle/export.dart';
+import 'package:bunq/bunq.dart';
 
-main() {
-  var keyParams = RSAKeyGeneratorParameters(BigInt.from(65537), 2048, 5);
+main() async {
+  Bunq.init(
+    apiKey: "sandbox_4e8084e646ce20d5ce30ded6dd1827fedf946209291003057cc63da4",
+//    apiKey: "218aed45bf55e7432a20b081f303a3cfd88058c406629b1bb68e43ce758fe736",
+    production: false,
+//    useLogger: true,
+  );
 
-  SecureRandom random = RsaKeyHelper().getSecureRandom();
+  final l = await Installations().install();
 
-  print(random.toString());
+  print(l.data);
 
-  var rngParams =
-      ParametersWithRandom(keyParams, RsaKeyHelper().getSecureRandom());
-  var k = RSAKeyGenerator();
-  k.init(rngParams);
+  final j = await Devices().register(l.data.token.token);
 
-  var keyPair = k.generateKeyPair();
+  print(j.data);
 
-  print(RsaKeyHelper().encodePublicKeyToPemPKCS1(keyPair.publicKey));
-  print(RsaKeyHelper().encodePrivateKeyToPemPKCS1(keyPair.privateKey));
-//
-//  AsymmetricKeyParameter<RSAPublicKey> keyParametersPublic =
-//      PublicKeyParameter(keyPair.publicKey);
-//  var cipher = RSAEngine()..init(true, keyParametersPublic);
-//
-//  var cipherText = cipher.process(Uint8List.fromList("Hello World".codeUnits));
-//
-//  print("Encrypted: ${String.fromCharCodes(cipherText)}");
-//
-//  AsymmetricKeyParameter<RSAPrivateKey> keyParametersPrivate =
-//      PrivateKeyParameter(keyPair.privateKey);
-//
-//  cipher.init(false, keyParametersPrivate);
-//  var decrypted = cipher.process(cipherText);
-//  print("Decrypted: ${String.fromCharCodes(decrypted)}");
+  final k = await Sessions().start(l.data.token.token, l.data.id.id);
+
+  print(k.data);
 }

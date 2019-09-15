@@ -1,6 +1,8 @@
 import 'package:bunq/src/constants/url.dart';
-import 'package:bunq/src/util/log.dart';
+import 'package:bunq/src/utils/log.dart';
+import 'package:bunq/src/utils/rsa.dart';
 import 'package:meta/meta.dart';
+import 'package:pointycastle/pointycastle.dart';
 
 class Bunq {
   factory Bunq() {
@@ -10,8 +12,11 @@ class Bunq {
   }
 
   Bunq._({
+    @required this.apiKey,
     @required this.publicKey,
-    @required this.secretKey,
+    @required this.privateKey,
+    @required this.publicKeyPem,
+    @required this.privateKeyPem,
     @required this.production,
   }) : baseUrl = production ? Url.Prod : Url.Staging;
 
@@ -21,20 +26,24 @@ class Bunq {
   }
 
   static void init({
-    @required String publicKey,
-    @required String secretKey,
+    @required String apiKey,
     @required bool production,
     bool useLogger = false,
     bool restart = false,
   }) {
-    assert(publicKey != null);
-    assert(secretKey != null);
+    assert(apiKey != null);
     assert(production != null);
     assert((_instance != null && restart == true) || _instance == null,
         'Are you trying to reset the previous keys by calling Bunq.init() again?.');
+
+    final rsa = RsaKeyHelper();
+
     _instance = Bunq._(
-      publicKey: publicKey,
-      secretKey: secretKey,
+      apiKey: apiKey,
+      publicKey: rsa.keys.publicKey,
+      privateKey: rsa.keys.privateKey,
+      publicKeyPem: rsa.publicKeyPem(),
+      privateKeyPem: rsa.privateKeyPem(),
       production: production,
     );
     // Initialize logger
@@ -43,13 +52,24 @@ class Bunq {
 
   static Bunq _instance;
 
-  final String publicKey;
-  final String secretKey;
+  final String apiKey;
+  final PublicKey publicKey;
+  final PrivateKey privateKey;
+  final String publicKeyPem;
+  final String privateKeyPem;
   final bool production;
   final String baseUrl;
 
   @override
   String toString() {
-    return '$runtimeType(publicKey: $publicKey, secretKey: $secretKey, production: $production, baseUrl: $baseUrl)';
+    return '$runtimeType('
+        'apiKey: $apiKey, '
+        'publicKey: $publicKey, '
+        'privateKey: $privateKey, '
+        'publicKeyPem: $publicKeyPem, '
+        'privateKeyPem: $privateKeyPem, '
+        'production: $production, '
+        'baseUrl: $baseUrl'
+        ')';
   }
 }
