@@ -1,3 +1,6 @@
 library bunq;
 
-export 'src/bunq_base.dart';
+export 'src/Bunq.dart';
+export 'src/Devices.dart';
+export 'src/Installations.dart';
+export 'src/Sessions.dart';

@@ -1,10 +1,10 @@
 import 'dart:convert' show json;
 
-import 'package:bunq/src/bunq_base.dart';
+import 'package:bunq/src/Bunq.dart';
 import 'package:bunq/src/constants/strings.dart';
-import 'package:bunq/src/util/exceptions.dart';
-import 'package:bunq/src/util/log.dart';
-import 'package:bunq/src/util/model.dart';
+import 'package:bunq/src/utils/exceptions.dart';
+import 'package:bunq/src/utils/log.dart';
+import 'package:bunq/src/utils/model.dart';
 import 'package:http/http.dart' as http;
 
 typedef T TransformFunction<T>(dynamic data, String status);
@@ -33,13 +33,13 @@ class Response<T> {
         throw ResponseException(_response.statusCode, status, message);
       }
 
-      rawData = _response.statusCode < 300
-          ? (responseJson != null &&
-                  responseJson is Map &&
-                  responseJson.containsKey("data")
-              ? responseJson["data"]
+      final _rawData = _response.statusCode < 300
+          ? (responseJson != null && responseJson is Map && responseJson.containsKey("Response")
+              ? responseJson["Response"]
               : responseJson)
           : null;
+
+      rawData = _rawData is List ? _formatResponse(_rawData) : _rawData;
     } on ResponseException catch (e) {
       status = e.status;
       message = e.message;
@@ -47,9 +47,7 @@ class Response<T> {
       Log().error('ResponseException', e);
     } catch (e) {
       status = "UNKNOWN";
-      message = _response.statusCode == 502 && Bunq().production
-          ? Strings.errorMessage
-          : e.toString();
+      message = _response.statusCode == 502 && Bunq().production ? Strings.errorMessage : e.toString();
       rawData = null;
       Log().error('Response.catch', e);
       if (showThrow) {
@@ -125,9 +123,16 @@ class Response<T> {
 
   bool get isTooLarge => statusCode == 413;
 
-  Map<String, dynamic> toMap() =>
-      rawData is Map ? rawData : <String, dynamic>{':( Rave': rawData};
+  Map<String, dynamic> toMap() => rawData is Map ? rawData : <String, dynamic>{':( Rave': rawData};
 
   @override
   String toString() => Model.mapToString(toMap());
+}
+
+Map<String, dynamic> _formatResponse(List<dynamic> response) {
+  return response.fold({}, (model, el) {
+    assert(el is Map<String, dynamic>);
+    final key = el.keys.first;
+    return model..putIfAbsent(key, () => el[key]);
+  });
 }
