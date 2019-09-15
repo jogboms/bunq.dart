@@ -1,0 +1,21 @@
+# Files and directories created by pub
+.packages
+.history/
+.pub/
+.dart_tool/
+build/
+packages
+pubspec.lock
+test/.test_coverage.dart
+coverage/
+
+# Directory created by dartdoc
+doc/api/
+
+# JetBrains IDEs
+.idea/
+*.iml
+*.ipr
+*.iws
+
+*.g.dart
