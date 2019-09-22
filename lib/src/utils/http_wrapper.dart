@@ -1,15 +1,16 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:bunq/src/Bunq.dart';
 import 'package:bunq/src/utils/exceptions.dart';
 import 'package:bunq/src/utils/log.dart';
 import 'package:bunq/src/utils/rsa.dart';
 import 'package:http/http.dart' as http;
+import 'package:meta/meta.dart';
+import 'package:pointycastle/pointycastle.dart';
 import 'package:uuid/uuid.dart';
 
 class HttpWrapper {
-  HttpWrapper() : baseUrl = Bunq().baseUrl;
+  HttpWrapper({@required this.baseUrl, @required this.privateKey});
 
   static Map<String, String> get headers => {
         'Accept': 'application/json',
@@ -23,6 +24,7 @@ class HttpWrapper {
       };
 
   final String baseUrl;
+  final PrivateKey privateKey;
 
   Future<http.Response> get(
     String url, {
@@ -42,7 +44,7 @@ class HttpWrapper {
 
       Map<String, String> _headers = {if (mergeHeaders) ...HttpWrapper.headers, ...headers};
       if (shouldSign == true && token != null) {
-        _headers = _signedHeaders("GET", url, token, "", _headers);
+        _headers = _signedHeaders(privateKey, "GET", url, token, "", _headers);
       }
 
       return http.get(baseUrl + url, headers: _headers);
@@ -71,7 +73,7 @@ class HttpWrapper {
 
       Map<String, String> _headers = {if (mergeHeaders) ...HttpWrapper.headers, ...headers};
       if (shouldSign == true && token != null) {
-        _headers = _signedHeaders("POST", url, token, _body, _headers);
+        _headers = _signedHeaders(privateKey, "POST", url, token, _body, _headers);
       }
 
       return http.post(baseUrl + url, headers: _headers, body: _body);
@@ -85,10 +87,11 @@ const _bunqHeaderPrefix = 'X-Bunq-';
 const _allowedSignedHeaders = ['Cache-Control', 'User-Agent'];
 const _ignoredSignedHeaders = ['X-Bunq-Client-Signature'];
 
-Map<String, String> _signedHeaders(String method, String url, String token, String body, Map<String, String> headers) {
+Map<String, String> _signedHeaders(
+    PrivateKey privateKey, String method, String url, String token, String body, Map<String, String> headers) {
   final headersToSign = {...headers, 'X-Bunq-Client-Authentication': token};
   final dataToSign = "$method /$url\n${_normalizeHeaders(headersToSign)}\n$body";
-  final signature = Rsa.sign(dataToSign, Bunq().privateKey);
+  final signature = Rsa.sign(dataToSign, privateKey);
   return {...headersToSign, 'X-Bunq-Client-Signature': signature};
 }
 
