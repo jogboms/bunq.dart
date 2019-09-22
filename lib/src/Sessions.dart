@@ -16,7 +16,7 @@ class Sessions {
 
     final _response = Response<Session>(
       await _http.post(Endpoints.sessions, payload, shouldSign: true, token: token),
-      onTransform: (dynamic data, _) => Session.fromJson(data),
+      onTransform: Session.fromJson,
     );
 
     Log().debug("$runtimeType.start() -> Response", _response);

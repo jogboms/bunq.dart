@@ -1,4 +1,5 @@
 import 'dart:convert' show json;
+import 'dart:io';
 
 import 'package:bunq/src/Bunq.dart';
 import 'package:bunq/src/constants/strings.dart';
@@ -6,133 +7,91 @@ import 'package:bunq/src/utils/exceptions.dart';
 import 'package:bunq/src/utils/log.dart';
 import 'package:bunq/src/utils/model.dart';
 import 'package:http/http.dart' as http;
+import 'package:meta/meta.dart';
 
-typedef T TransformFunction<T>(dynamic data, String status);
+typedef T TransformFunction<T>(Map<String, dynamic> data);
 
-class Response<T> {
-  Response(
-    this._response, {
-    TransformFunction<T> onTransform,
-    bool showThrow = true,
-  }) {
+class Response<T extends ModelInterface> with ModelInterface {
+  factory Response(http.Response _response, {TransformFunction<T> onTransform, bool shouldThrow = true}) {
+    final status = _Status(_response.statusCode);
     try {
-      final dynamic responseJson = json.decode(_response.body);
-      status = responseJson != null
-          ? (responseJson is Map && responseJson.containsKey("status")
-              ? responseJson["status"]
-              : _response.statusCode < 300 ? 'success' : 'error')
-          : 'UNKNOWN';
-      message = responseJson != null &&
-              responseJson is Map &&
-              responseJson.containsKey("message") &&
-              responseJson["message"] != null
-          ? responseJson["message"]
-          : !Bunq().production ? _response.reasonPhrase : Strings.errorMessage;
+      final Map<String, dynamic> response = json.decode(_response.body);
 
-      if (_response.statusCode >= 300) {
-        throw ResponseException(_response.statusCode, status, message);
+      if (response == null || response is! Map) {
+        throw ResponseException(status.code, _response.reasonPhrase);
       }
 
-      final _rawData = _response.statusCode < 300
-          ? (responseJson != null && responseJson is Map && responseJson.containsKey("Response")
-              ? responseJson["Response"]
-              : responseJson)
-          : null;
-
-      rawData = _rawData is List ? _formatResponse(_rawData) : _rawData;
-    } on ResponseException catch (e) {
-      status = e.status;
-      message = e.message;
-      rawData = null;
-      Log().error('ResponseException', e);
-    } catch (e) {
-      status = "UNKNOWN";
-      message = _response.statusCode == 502 && Bunq().production ? Strings.errorMessage : e.toString();
-      rawData = null;
-      Log().error('Response.catch', e);
-      if (showThrow) {
-        throw ResponseException(_response.statusCode, status, message);
-      }
-    }
-
-    if (showThrow) {
-      if (isForbidden) {
-        throw ForbiddenException(status, message);
-      }
-
-      if (isNotAuthorized) {
-        throw NotAuthorisedException(status, message);
-      }
-
-      if (isBadRequest) {
-        throw BadRequestException(status, message);
-      }
-
-      if (isNotOk) {
+      if (status.isNotOk) {
+        final error = _formatResponse(response["Error"]);
         throw ResponseException(
-          _response.statusCode,
-          status,
-          message,
+          status.code,
+          error["error_description_translated"] ?? error["error_description"],
         );
       }
-    }
 
-    if (onTransform != null) {
-      data = onTransform(rawData, status);
+      return Response._(
+        status: status,
+        message: _response.reasonPhrase,
+        data: onTransform != null
+            ? onTransform(_formatResponse(response["Response"], response.containsKey("Pagination")))
+            : null,
+      );
+    } catch (e) {
+      Log().error('Response.catch', e);
+      final message = status.code == HttpStatus.badGateway && Bunq().production ? Strings.errorMessage : e.toString();
+
+      if (shouldThrow) {
+        if (status.isForbidden) {
+          throw ForbiddenException(message);
+        }
+
+        if (status.isNotAuthorized) {
+          throw UnAuthorisedException(message);
+        }
+
+        if (status.isBadRequest) {
+          throw BadRequestException(message);
+        }
+
+        throw ResponseException(status.code, message);
+      }
+
+      return Response._(status: status, message: message);
     }
   }
 
-  final http.Response _response;
-  String status;
-  String message;
-  dynamic rawData;
-  T data;
+  Response._({@required this.status, @required this.message, this.data});
 
-  int get statusCode => _response.statusCode;
+  final _Status status;
+  final String message;
+  final T data;
 
-  String get reasonPhrase => _response.reasonPhrase;
+  @override
+  Map<String, dynamic> toMap() => {"status": status.code, "message": message, "data": data?.toMap()};
+}
 
-  bool get isOk {
-    if (statusCode >= 200 && statusCode < 300) {
-      return true;
-    } else if (statusCode >= 400 && statusCode < 500) {
-      return false;
-    } else if (statusCode >= 500) {
-      return false;
-    }
-    return false;
-  }
+Map<String, dynamic> _formatResponse(List<dynamic> response, [bool hasMultiple = false]) {
+  return response.fold({}, (model, el) {
+    assert(el is Map<String, dynamic>);
+    final key = el.keys.first, value = el[key];
+    return model..update(key, (prev) => prev..add(value), ifAbsent: () => hasMultiple ? [value] : value);
+  });
+}
 
-  bool get isSuccess => status == "success";
+class _Status {
+  _Status(this.code);
 
-  bool get isError => status == "error";
+  final int code;
 
-  bool get isCancel => status == "cancelled";
+  bool get isOk => code >= HttpStatus.ok && code < HttpStatus.multipleChoices;
 
   bool get isNotOk => !isOk;
 
-  bool get isBadRequest => statusCode == 400;
+  bool get isBadRequest => code == HttpStatus.badRequest;
 
-  bool get isNotFound => statusCode == 404;
+  bool get isNotFound => code == HttpStatus.notFound;
 
-  bool get isNotAcceptable => statusCode == 406;
+  bool get isNotAuthorized => code == HttpStatus.unauthorized;
 
-  bool get isNotAuthorized => statusCode == 401;
-
-  bool get isForbidden => statusCode == 403;
-
-  bool get isTooLarge => statusCode == 413;
-
-  Map<String, dynamic> toMap() => rawData is Map ? rawData : <String, dynamic>{':( Rave': rawData};
-
-  @override
-  String toString() => Model.mapToString(toMap());
-}
-
-Map<String, dynamic> _formatResponse(List<dynamic> response) {
-  return response.fold({}, (model, el) {
-    assert(el is Map<String, dynamic>);
-    final key = el.keys.first;
-    return model..putIfAbsent(key, () => el[key]);
-  });
+  bool get isForbidden => code == HttpStatus.forbidden;
 }

@@ -20,7 +20,7 @@ class Devices {
 
     final _response = Response<Device>(
       await _http.post(Endpoints.devices, payload, shouldSign: true, token: token),
-      onTransform: (dynamic data, _) => Device.fromJson(data),
+      onTransform: Device.fromJson,
     );
 
     Log().debug("$runtimeType.register() -> Response", _response);

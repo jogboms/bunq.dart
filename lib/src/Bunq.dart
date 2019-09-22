@@ -40,8 +40,8 @@ class Bunq {
 
     _instance = Bunq._(
       apiKey: apiKey,
-      publicKey: rsa.keys.publicKey,
-      privateKey: rsa.keys.privateKey,
+      publicKey: rsa.publicKey,
+      privateKey: rsa.privateKey,
       publicKeyPem: rsa.publicKeyPem(),
       privateKeyPem: rsa.privateKeyPem(),
       production: production,
