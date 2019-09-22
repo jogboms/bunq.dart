@@ -26,6 +26,7 @@ import 'package:bunq/src/models/ServerPublicKey.dart';
 import 'package:bunq/src/models/Session.dart';
 import 'package:bunq/src/models/Setting.dart';
 import 'package:bunq/src/models/Token.dart';
+import 'package:bunq/src/models/User.dart';
 import 'package:bunq/src/models/UserPerson.dart';
 
 part 'serializers.g.dart';
@@ -45,6 +46,7 @@ part 'serializers.g.dart';
   Image,
   NotificationFilter,
   Token,
+  User,
   UserPerson,
   Device,
   Session,
