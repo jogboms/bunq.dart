@@ -22,4 +22,8 @@ main() async {
   final o = await Accounts().fetch(k.data.token.token, k.data.userPerson.id);
 
   print(o.data);
+
+  final p = await Users().fetch(k.data.token.token, k.data.userPerson.id);
+
+  print(p.data);
 }
