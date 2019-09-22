@@ -18,4 +18,8 @@ main() async {
   final k = await Sessions().start(l.data.token.token, l.data.id.id);
 
   print(k.data);
+
+  final o = await Accounts().fetch(k.data.token.token, k.data.userPerson.id);
+
+  print(o.data);
 }
