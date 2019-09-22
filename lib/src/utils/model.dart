@@ -40,7 +40,12 @@ abstract class Model implements ModelInterface {
   Map<String, dynamic> toJson() => toMap();
 
   static String mapToString(Map<String, dynamic> map) {
-    return json.encode(map);
+    assert(map != null);
+    try {
+      return json.encode(map);
+    } catch (e) {
+      return null;
+    }
   }
 
   static Map<String, dynamic> stringToMap(String string) {

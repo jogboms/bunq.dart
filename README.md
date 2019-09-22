@@ -1,7 +1,6 @@
-A library for Dart developers.
+# 🌈 Bunq
 
-Created from templates made available by Stagehand under a BSD-style
-[license](https://github.com/dart-lang/stagehand/blob/master/LICENSE).
+A minimal Dart API layer for [Bunq](https://www.bunq.com).
 
 ## Usage
 
@@ -11,7 +10,7 @@ A simple usage example:
 import 'package:bunq/bunq.dart';
 
 main() {
-  Bunq.init();
+  Bunq.init(apiKey: "API_KEY", production: false);
 }
 ```
 
@@ -19,4 +18,8 @@ main() {
 
 Please file feature requests and bugs at the [issue tracker][tracker].
 
-[tracker]: http://example.com/issues/replaceme
+[tracker]: https://github.com/jogboms/bunq.dart/issues/new
+
+## License
+
+MIT License

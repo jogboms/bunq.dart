@@ -16,7 +16,7 @@ class Installations {
 
     final _response = Response<Installation>(
       await _http.post(Endpoints.installations, payload),
-      onTransform: (dynamic data, _) => Installation.fromJson(data),
+      onTransform: Installation.fromJson,
     );
 
     Log().debug("$runtimeType.install() -> Response", _response);

@@ -11,12 +11,12 @@ import 'package:bunq/src/models/BillingContract.dart';
 import 'package:bunq/src/models/BillingContractSubscription.dart';
 import 'package:bunq/src/models/Customer.dart';
 import 'package:bunq/src/models/CustomerLimit.dart';
-import 'package:bunq/src/models/DailyLimitWithoutConfirmationLogin.dart';
 import 'package:bunq/src/models/Device.dart';
 import 'package:bunq/src/models/DocumentAttachment.dart';
 import 'package:bunq/src/models/Id.dart';
 import 'package:bunq/src/models/Image.dart';
 import 'package:bunq/src/models/Installation.dart';
+import 'package:bunq/src/models/Money.dart';
 import 'package:bunq/src/models/NotificationFilter.dart';
 import 'package:bunq/src/models/ServerPublicKey.dart';
 import 'package:bunq/src/models/Session.dart';
@@ -34,7 +34,7 @@ part 'serializers.g.dart';
   BillingContractSubscription,
   Customer,
   CustomerLimit,
-  DailyLimitWithoutConfirmationLogin,
+  Money,
   DocumentAttachment,
   Image,
   NotificationFilter,

@@ -1,4 +1,4 @@
-library userPerson;
+library user_person;
 
 import 'package:built_collection/built_collection.dart';
 import 'package:built_value/built_value.dart';
@@ -9,8 +9,8 @@ import 'package:bunq/src/models/Avatar.dart';
 import 'package:bunq/src/models/BillingContract.dart';
 import 'package:bunq/src/models/Customer.dart';
 import 'package:bunq/src/models/CustomerLimit.dart';
-import 'package:bunq/src/models/DailyLimitWithoutConfirmationLogin.dart';
 import 'package:bunq/src/models/DocumentAttachment.dart';
+import 'package:bunq/src/models/Money.dart';
 import 'package:bunq/src/models/NotificationFilter.dart';
 import 'package:bunq/src/utils/model.dart';
 import 'package:bunq/src/utils/serializers.dart';
@@ -47,7 +47,7 @@ abstract class UserPerson with ModelInterface implements Built<UserPerson, UserP
   CustomerLimit get customerLimit;
 
   @BuiltValueField(wireName: 'daily_limit_without_confirmation_login')
-  DailyLimitWithoutConfirmationLogin get dailyLimitWithoutConfirmationLogin;
+  Money get dailyLimitWithoutConfirmationLogin;
 
   @BuiltValueField(wireName: 'date_of_birth')
   String get dateOfBirth;
