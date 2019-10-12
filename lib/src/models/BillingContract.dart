@@ -11,7 +11,7 @@ part 'BillingContract.g.dart';
 abstract class BillingContract with ModelInterface implements Built<BillingContract, BillingContractBuilder> {
   BillingContract._();
 
-  factory BillingContract([updates(BillingContractBuilder b)]) = _$BillingContract;
+  factory BillingContract([Function(BillingContractBuilder b) updates]) = _$BillingContract;
 
   @BuiltValueField(wireName: 'BillingContractSubscription')
   BillingContractSubscription get billingContractSubscription;

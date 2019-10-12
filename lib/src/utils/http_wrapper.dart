@@ -114,7 +114,7 @@ String _normalizeHeaders(Map<String, dynamic> headers) {
   return headerNames.fold("", (acc, name) {
     final headerName = _normalizeHeaderName(name);
     if (_shouldHeaderBeSigned(headerName)) {
-      return "${acc}${headerName}: ${headers[name]}\n";
+      return "$acc$headerName: ${headers[name]}\n";
     }
     return acc;
   });

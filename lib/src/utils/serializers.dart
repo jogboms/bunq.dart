@@ -31,8 +31,7 @@ import 'package:bunq/src/models/UserPerson.dart';
 
 part 'serializers.g.dart';
 
-// ignore: unnecessary_const
-@SerializersFor(const [
+@SerializersFor([
   Alias,
   Avatar,
   Address,

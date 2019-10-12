@@ -20,7 +20,7 @@ part 'UserPerson.g.dart';
 abstract class UserPerson with ModelInterface implements Built<UserPerson, UserPersonBuilder> {
   UserPerson._();
 
-  factory UserPerson([updates(UserPersonBuilder b)]) = _$UserPerson;
+  factory UserPerson([Function(UserPersonBuilder b) updates]) = _$UserPerson;
 
   @BuiltValueField(wireName: 'address_main')
   Address get addressMain;

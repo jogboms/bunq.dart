@@ -10,7 +10,7 @@ part 'DocumentAttachment.g.dart';
 abstract class DocumentAttachment with ModelInterface implements Built<DocumentAttachment, DocumentAttachmentBuilder> {
   DocumentAttachment._();
 
-  factory DocumentAttachment([updates(DocumentAttachmentBuilder b)]) = _$DocumentAttachment;
+  factory DocumentAttachment([Function(DocumentAttachmentBuilder b) updates]) = _$DocumentAttachment;
 
   @BuiltValueField(wireName: 'content_type')
   String get contentType;

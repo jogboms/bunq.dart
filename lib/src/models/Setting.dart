@@ -10,7 +10,7 @@ part 'Setting.g.dart';
 abstract class Setting with ModelInterface implements Built<Setting, SettingBuilder> {
   Setting._();
 
-  factory Setting([updates(SettingBuilder b)]) = _$Setting;
+  factory Setting([Function(SettingBuilder b) updates]) = _$Setting;
 
   String get color;
 

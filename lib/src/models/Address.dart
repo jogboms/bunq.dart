@@ -10,7 +10,7 @@ part 'Address.g.dart';
 abstract class Address with ModelInterface implements Built<Address, AddressBuilder> {
   Address._();
 
-  factory Address([updates(AddressBuilder b)]) = _$Address;
+  factory Address([Function(AddressBuilder b) updates]) = _$Address;
 
   String get city;
 

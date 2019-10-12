@@ -10,7 +10,7 @@ part 'Id.g.dart';
 abstract class Id with ModelInterface implements Built<Id, IdBuilder> {
   Id._();
 
-  factory Id([updates(IdBuilder b)]) = _$Id;
+  factory Id([Function(IdBuilder b) updates]) = _$Id;
 
   int get id;
 

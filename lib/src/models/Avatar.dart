@@ -12,7 +12,7 @@ part 'Avatar.g.dart';
 abstract class Avatar with ModelInterface implements Built<Avatar, AvatarBuilder> {
   Avatar._();
 
-  factory Avatar([updates(AvatarBuilder b)]) = _$Avatar;
+  factory Avatar([Function(AvatarBuilder b) updates]) = _$Avatar;
 
   @BuiltValueField(wireName: 'anchor_uuid')
   String get anchorUuid;

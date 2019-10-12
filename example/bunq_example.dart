@@ -1,6 +1,6 @@
 import 'package:bunq/bunq.dart';
 
-main() async {
+void main() async {
   Bunq.init(
     apiKey: "sandbox_4e8084e646ce20d5ce30ded6dd1827fedf946209291003057cc63da4",
     production: false,

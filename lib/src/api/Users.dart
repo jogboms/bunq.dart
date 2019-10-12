@@ -9,7 +9,7 @@ class Users extends Api {
     Log().debug("$runtimeType.fetch()", userId);
 
     final _response = Response<User>(
-      await http.get(Endpoints.users + "/" + userId.toString(), shouldSign: true, token: token),
+      await http.get("${Endpoints.users}/$userId", shouldSign: true, token: token),
       onTransform: User.fromJson,
     );
 

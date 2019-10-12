@@ -10,7 +10,7 @@ part 'SaveId.g.dart';
 abstract class SaveId with ModelInterface implements Built<SaveId, SaveIdBuilder> {
   SaveId._();
 
-  factory SaveId([updates(SaveIdBuilder b)]) = _$SaveId;
+  factory SaveId([Function(SaveIdBuilder b) updates]) = _$SaveId;
 
   int get id;
 
