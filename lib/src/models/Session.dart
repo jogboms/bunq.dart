@@ -13,7 +13,7 @@ part 'Session.g.dart';
 abstract class Session with ModelInterface implements Built<Session, SessionBuilder> {
   Session._();
 
-  factory Session([updates(SessionBuilder b)]) = _$Session;
+  factory Session([Function(SessionBuilder b) updates]) = _$Session;
 
   @BuiltValueField(wireName: 'Id')
   Id get id;

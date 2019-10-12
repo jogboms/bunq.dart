@@ -10,7 +10,7 @@ part 'Alias.g.dart';
 abstract class Alias with ModelInterface implements Built<Alias, AliasBuilder> {
   Alias._();
 
-  factory Alias([updates(AliasBuilder b)]) = _$Alias;
+  factory Alias([Function(AliasBuilder b) updates]) = _$Alias;
 
   String get name;
 

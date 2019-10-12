@@ -11,7 +11,7 @@ part 'Device.g.dart';
 abstract class Device with ModelInterface implements Built<Device, DeviceBuilder> {
   Device._();
 
-  factory Device([updates(DeviceBuilder b)]) = _$Device;
+  factory Device([Function(DeviceBuilder b) updates]) = _$Device;
 
   @BuiltValueField(wireName: 'Id')
   Id get id;

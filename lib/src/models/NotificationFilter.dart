@@ -10,7 +10,7 @@ part 'NotificationFilter.g.dart';
 abstract class NotificationFilter with ModelInterface implements Built<NotificationFilter, NotificationFilterBuilder> {
   NotificationFilter._();
 
-  factory NotificationFilter([updates(NotificationFilterBuilder b)]) = _$NotificationFilter;
+  factory NotificationFilter([Function(NotificationFilterBuilder b) updates]) = _$NotificationFilter;
 
   String get category;
 

@@ -10,7 +10,7 @@ part 'Customer.g.dart';
 abstract class Customer with ModelInterface implements Built<Customer, CustomerBuilder> {
   Customer._();
 
-  factory Customer([updates(CustomerBuilder b)]) = _$Customer;
+  factory Customer([Function(CustomerBuilder b) updates]) = _$Customer;
 
   @BuiltValueField(wireName: 'billing_account_id')
   int get billingAccountId;

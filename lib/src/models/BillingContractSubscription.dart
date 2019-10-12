@@ -12,7 +12,8 @@ abstract class BillingContractSubscription
     implements Built<BillingContractSubscription, BillingContractSubscriptionBuilder> {
   BillingContractSubscription._();
 
-  factory BillingContractSubscription([updates(BillingContractSubscriptionBuilder b)]) = _$BillingContractSubscription;
+  factory BillingContractSubscription([Function(BillingContractSubscriptionBuilder b) updates]) =
+      _$BillingContractSubscription;
 
   @nullable
   @BuiltValueField(wireName: 'contract_date_end')

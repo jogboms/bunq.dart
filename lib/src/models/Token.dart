@@ -10,7 +10,7 @@ part 'Token.g.dart';
 abstract class Token with ModelInterface implements Built<Token, TokenBuilder> {
   Token._();
 
-  factory Token([updates(TokenBuilder b)]) = _$Token;
+  factory Token([Function(TokenBuilder b) updates]) = _$Token;
 
   DateTime get created;
 

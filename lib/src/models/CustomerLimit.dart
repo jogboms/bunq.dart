@@ -10,7 +10,7 @@ part 'CustomerLimit.g.dart';
 abstract class CustomerLimit with ModelInterface implements Built<CustomerLimit, CustomerLimitBuilder> {
   CustomerLimit._();
 
-  factory CustomerLimit([updates(CustomerLimitBuilder b)]) = _$CustomerLimit;
+  factory CustomerLimit([Function(CustomerLimitBuilder b) updates]) = _$CustomerLimit;
 
   @nullable
   @BuiltValueField(wireName: 'limit_amount_monthly')

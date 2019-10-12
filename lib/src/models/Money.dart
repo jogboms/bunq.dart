@@ -10,7 +10,7 @@ part 'Money.g.dart';
 abstract class Money with ModelInterface implements Built<Money, MoneyBuilder> {
   Money._();
 
-  factory Money([updates(MoneyBuilder b)]) = _$Money;
+  factory Money([Function(MoneyBuilder b) updates]) = _$Money;
 
   String get currency;
 

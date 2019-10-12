@@ -13,7 +13,7 @@ part 'Installation.g.dart';
 abstract class Installation with ModelInterface implements Built<Installation, InstallationBuilder> {
   Installation._();
 
-  factory Installation([updates(InstallationBuilder b)]) = _$Installation;
+  factory Installation([Function(InstallationBuilder b) updates]) = _$Installation;
 
   @BuiltValueField(wireName: 'Id')
   Id get id;

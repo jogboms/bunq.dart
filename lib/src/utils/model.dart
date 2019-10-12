@@ -10,6 +10,7 @@ abstract class ModelInterface {
 }
 
 abstract class Model implements ModelInterface {
+  @override
   Map<String, dynamic> toMap();
 
   Model clone() => null;
@@ -30,13 +31,14 @@ abstract class Model implements ModelInterface {
     }
   }
 
-  static List<T> generator<T>(dynamic items, T Function(dynamic) cb) {
+  static List<T> generator<T>(List<dynamic> items, T Function(dynamic) cb) {
     return List<T>.generate(
       items != null ? items.length : 0,
       (int index) => cb(items[index]),
     );
   }
 
+  @override
   Map<String, dynamic> toJson() => toMap();
 
   static String mapToString(Map<String, dynamic> map) {

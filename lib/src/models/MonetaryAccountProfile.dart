@@ -13,7 +13,7 @@ abstract class MonetaryAccountProfile
     implements Built<MonetaryAccountProfile, MonetaryAccountProfileBuilder> {
   MonetaryAccountProfile._();
 
-  factory MonetaryAccountProfile([updates(MonetaryAccountProfileBuilder b)]) = _$MonetaryAccountProfile;
+  factory MonetaryAccountProfile([Function(MonetaryAccountProfileBuilder b) updates]) = _$MonetaryAccountProfile;
 
   @BuiltValueField(wireName: 'profile_action_required')
   String get profileActionRequired;

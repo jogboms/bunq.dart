@@ -10,7 +10,7 @@ part 'Image.g.dart';
 abstract class Image with ModelInterface implements Built<Image, ImageBuilder> {
   Image._();
 
-  factory Image([updates(ImageBuilder b)]) = _$Image;
+  factory Image([Function(ImageBuilder b) updates]) = _$Image;
 
   @BuiltValueField(wireName: 'attachment_public_uuid')
   String get attachmentPublicUuid;

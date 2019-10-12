@@ -1,4 +1,3 @@
-import 'dart:convert' show json;
 import 'dart:io';
 
 import 'package:bunq/src/Bunq.dart';
@@ -9,13 +8,13 @@ import 'package:bunq/src/utils/model.dart';
 import 'package:http/http.dart' as http;
 import 'package:meta/meta.dart';
 
-typedef T TransformFunction<T>(Map<String, dynamic> data);
+typedef TransformFunction<T> = T Function(Map<String, dynamic> data);
 
 class Response<T extends ModelInterface> with ModelInterface {
   factory Response(http.Response _response, {TransformFunction<T> onTransform, bool shouldThrow = true}) {
     final status = _Status(_response.statusCode);
     try {
-      final Map<String, dynamic> response = json.decode(_response.body);
+      final Map<String, dynamic> response = Model.stringToMap(_response.body);
 
       if (response == null || response is! Map) {
         throw ResponseException(status.code, _response.reasonPhrase);
@@ -67,14 +66,19 @@ class Response<T extends ModelInterface> with ModelInterface {
   final T data;
 
   @override
-  Map<String, dynamic> toMap() => {"status": status.code, "message": message, "data": data?.toMap()};
+  Map<String, dynamic> toMap() => <String, dynamic>{"status": status.code, "message": message, "data": data?.toMap()};
 }
 
+/// dynamic being used here could either be a List of items or just an item
 Map<String, dynamic> _formatResponse(List<dynamic> response, [bool hasMultiple = false]) {
-  return response.fold({}, (model, el) {
-    assert(el is Map<String, dynamic>);
-    final key = el.keys.first, value = el[key];
-    return model..update(key, (prev) => prev..add(value), ifAbsent: () => hasMultiple ? [value] : value);
+  return response.fold(<String, dynamic>{}, (Map<String, dynamic> model, dynamic el) {
+    if (el is Map<String, dynamic>) {
+      final key = el.keys.first;
+      final Map<String, dynamic> value = el[key];
+      return model..update(key, (dynamic prev) => prev..add(value), ifAbsent: () => hasMultiple ? [value] : value);
+    }
+
+    return model;
   });
 }
 

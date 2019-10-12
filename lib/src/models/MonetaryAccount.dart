@@ -12,7 +12,7 @@ part 'MonetaryAccount.g.dart';
 abstract class MonetaryAccount with ModelInterface implements Built<MonetaryAccount, MonetaryAccountBuilder> {
   MonetaryAccount._();
 
-  factory MonetaryAccount([updates(MonetaryAccountBuilder b)]) = _$MonetaryAccount;
+  factory MonetaryAccount([Function(MonetaryAccountBuilder b) updates]) = _$MonetaryAccount;
 
   @BuiltValueField(wireName: 'MonetaryAccountBank')
   BuiltList<Account> get banks;

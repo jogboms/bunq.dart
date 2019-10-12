@@ -10,7 +10,7 @@ part 'ServerPublicKey.g.dart';
 abstract class ServerPublicKey with ModelInterface implements Built<ServerPublicKey, ServerPublicKeyBuilder> {
   ServerPublicKey._();
 
-  factory ServerPublicKey([updates(ServerPublicKeyBuilder b)]) = _$ServerPublicKey;
+  factory ServerPublicKey([Function(ServerPublicKeyBuilder b) updates]) = _$ServerPublicKey;
 
   @BuiltValueField(wireName: 'server_public_key')
   String get serverPublicKey;

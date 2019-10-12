@@ -18,7 +18,7 @@ part 'Account.g.dart';
 abstract class Account with ModelInterface implements Built<Account, AccountBuilder> {
   Account._();
 
-  factory Account([updates(AccountBuilder b)]) = _$Account;
+  factory Account([Function(AccountBuilder b) updates]) = _$Account;
 
   BuiltList<Alias> get alias;
 
